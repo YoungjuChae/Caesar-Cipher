@@ -1,0 +1,99 @@
+// Author: Youngju Chae
+// Caesar Cipher with encryption, decryption, and brute force 
+
+// Import necessary modules
+import java.util.Scanner;
+
+// Create class
+class Main {
+  public static void main(String[] args){
+    // Create necessary variables
+    String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    Scanner sc = new Scanner(System.in);
+    String choice = "";
+    String answer = "";
+    while (!answer.equals("n")){
+      while (!choice.equals("e") || !choice.equals("d") || !choice.equals("b")){
+        // Determine user's choice 
+        System.out.println("Do you wish to (e)ncrypt, (d)ecrypt, or (b)rute force a message?");
+        choice = sc.nextLine(); 
+        if (choice.equals("e") || choice.equals("d") || choice.equals("b")) 
+          break;
+      }
+      // When user wants to brute force
+      if (choice.equals("b")){
+        // Get user's message
+        System.out.println("Enter your message: ");
+        String message = sc.nextLine();
+        int key = 1;
+        // Print out all decrypted messages
+        while (key != 53){
+          String output = "";
+          int decrypt = key * -1;
+          // Determine if each character is part of the alphabet
+          for (int i = 0; i < message.length(); i++){
+            char characters = message.charAt(i);
+            int position = ALPHABET.indexOf(characters);
+            if (position != -1){
+              position += decrypt;
+              if (position >= ALPHABET.length()){
+                position -= ALPHABET.length();
+              }else if (position < 0) {
+                position += ALPHABET.length();
+              }
+              output += ALPHABET.charAt(position);
+            } else {
+              output += characters;
+            }
+          }
+          System.out.println("Key " + key + ": " + output);
+          key += 1;
+        }
+      } else {
+        // Ask user for message and key
+        System.out.println("Enter your message: ");
+        String message = sc.nextLine();
+        System.out.println("Enter the key number (1-52)");
+        int key = Integer.parseInt(sc.nextLine());
+        String output = "";
+        for (int i = 0; i < message.length(); i++){
+          char characters = message.charAt(i);
+          int position = ALPHABET.indexOf(characters);
+          if (position != -1){
+            // When user wants to encrypt
+            if (choice.equals("e")){
+              if (position + key >= 52){
+                int sum = position + key;
+                sum -= 52;
+                int pos2 = position;
+                pos2 -= sum;
+                position -= pos2;
+              } else {
+                position += key;
+              }
+              // When user wants to decrypt
+            } else {
+              if (position - key <= 0){
+                int difference = position - key;
+                difference  += 52;
+                difference -= position;
+                position += difference;
+              } else {
+                position -= key;
+              }
+            }
+            output += ALPHABET.charAt(position);     
+          }  else {
+            output += characters;
+          }
+        }
+        // Print user's translated message
+        System.out.println("Your translated text is:");
+        System.out.println(output); 
+      }
+      // Ask if user wants to run code again
+      System.out.println("Do you want to try again? (y)es or (n)o? ");
+      answer = sc.nextLine();
+    }
+  }
+}
